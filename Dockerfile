@@ -38,8 +38,7 @@ RUN npm install
 COPY . /usr/src/app
 RUN chmod +x /usr/src/app/gruntWithXvfb.sh
 
-ENTRYPOINT ["/gosu-entrypoint.sh"]
-CMD [ "/usr/src/app/gruntWithXvfb.sh" ]
+ENTRYPOINT ["/gosu-entrypoint.sh", "/usr/src/app/gruntWithXvfb.sh" ]
 
 #https://github.com/jfrazelle/dockerfiles/issues/65#issuecomment-217214671
 # run it as docker run --rm --security-opt seccomp:chrome.json pcl
