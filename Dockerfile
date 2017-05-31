@@ -38,6 +38,8 @@ RUN npm install
 COPY . /usr/src/app
 RUN chmod +x /usr/src/app/gruntWithXvfb.sh
 
+RUN mkdir /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && chown root /tmp/.X11-unix/
+
 ENTRYPOINT ["/gosu-entrypoint.sh", "/usr/src/app/gruntWithXvfb.sh" ]
 
 #https://github.com/jfrazelle/dockerfiles/issues/65#issuecomment-217214671
