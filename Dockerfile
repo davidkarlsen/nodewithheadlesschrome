@@ -1,8 +1,6 @@
 FROM node:5.2
 
-RUN apt-get update
-RUN apt-get install -y xvfb
-RUN apt-get install -y vim
+RUN apt-get update && apt-get install -y xvfb vim
 #TODO chain to https://github.com/dockerfile/chrome/
 RUN \
   wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
@@ -15,13 +13,17 @@ RUN \
 ENV CHROME_BIN=/usr/bin/google-chrome
 ENV DISPLAY=:10
 
+RUN wget -O /usr/local/bin/gosu https://github.com/tianon/gosu/releases/download/1.10/gosu-amd64 && chmod a+x /usr/local/bin/gosu
+
 
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package.json /usr/src/app/
+#COPY package.json /usr/src/app/
+
+COPY gosu-entrypoint.sh /
 
 #http://stackoverflow.com/questions/38609531/npm-install-g-gulp-hangs
 RUN npm config set proxy false
@@ -36,7 +38,9 @@ RUN npm install
 COPY . /usr/src/app
 RUN chmod +x /usr/src/app/gruntWithXvfb.sh
 
+ENTRYPOINT ["/gosu-entrypoint.sh"]
 CMD [ "/usr/src/app/gruntWithXvfb.sh" ]
 
 #https://github.com/jfrazelle/dockerfiles/issues/65#issuecomment-217214671
 # run it as docker run --rm --security-opt seccomp:chrome.json pcl
+
